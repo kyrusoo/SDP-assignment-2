@@ -247,7 +247,9 @@ commit was performed.
 
 Suggested commit: `feat: add Abstract Factory with typed family composition`
 
-## Stage 6 - Implemented, awaiting review/commit
+## Stage 6 - Committed
+
+Verified commit `09884230ad2259663f2a72d049761c8b388d2191` before Stage 7.
 
 Started from clean status at 41b46f0. Read root AGENTS.md completely, inspected
 App, factory/service contracts, pom.xml and Git history. No nested source/docs
@@ -282,4 +284,48 @@ with code 1 and usage. No staging or commit was performed.
 
 Suggested commit: `feat: select fabrication families from command-line arguments`
 
-Next stage: Stage 7 - Three collaborating business operations. Not started.
+## Stage 7 - Implemented, awaiting review/commit
+
+Started from clean status at 0988423 after reading root AGENTS.md and inspecting
+service, queue/stock implementations, product contracts, App, pom.xml and history.
+No nested source/docs instructions were found. Java 21 and Maven are unchanged.
+
+Modified FabricationService.java (three operations and submitted-job tracking),
+App.java (consume JobQuote), Machine.java and MaterialCatalog.java (document
+failure/mutation contracts). Added JobQuote.java and WorkflowDemo.java in
+src/main/java/sdp/assignment2. Added docs/business-operations.md and updated this
+progress file. Existing factories, registry, creators, calculations and stock/
+queue implementations are unchanged. No Stage 8 JUnit/UML work was started.
+
+Actual commands:
+
+```powershell
+& ([scriptblock]::Create((Get-Content target/stage2-check/check.ps1 -Raw))) target/classes target/stage7-check/before.json
+$env:JAVA_HOME = 'C:/Users/duzel/.jdks/ms-21.0.12.1'
+& 'C:/Program Files/JetBrains/IntelliJ IDEA 2026.2.2/plugins/maven-plugin/lib/maven3/bin/mvn.cmd' -o -B '-Dmaven.repo.local=target/stage2-check/m2' test
+& ([scriptblock]::Create((Get-Content target/stage2-check/check.ps1 -Raw))) target/classes target/stage7-check/after.json
+& 'C:/Users/duzel/.jdks/ms-21.0.12.1/bin/java.exe' --class-path target/classes target/stage7-check/WorkflowChecks.java
+foreach ($family in @('printing','laser','vinyl')) {
+    & 'C:/Users/duzel/.jdks/ms-21.0.12.1/bin/java.exe' -cp target/classes sdp.assignment2.WorkflowDemo $family
+}
+git diff --check
+```
+
+Maven compiled 32 Java files and reported BUILD SUCCESS. Maven and the source
+launcher ran outside the sandbox with the existing cache/JDK. There are no JUnit
+tests yet. All 12 App smoke cases matched previous stdout, stderr and exit code.
+All three WorkflowDemo runs exited 0 and showed the stock/queue transitions in
+business-operations.md. The ignored temporary WorkflowChecks.java passed 26
+assertions: all original families, quote non-mutation, successful submission,
+unknown/repeated cancellation, full release, insufficient stock without enqueue,
+rollback for a rejecting test machine and real vinyl capacity rejection, separate
+submissions of identical designs, and booking rejection without mutation.
+These temporary checks are not a committed JUnit suite. git diff --check passed.
+
+IntelliJ: run WorkflowDemo.main with JDK 21 and printing, laser or vinyl for the
+three-operation scenario. App.main still accepts the original quotation arguments,
+including `laser "Desk sign" 2 10`. No Git staging or commit was performed.
+
+Suggested commit: `feat: implement quotation submission and cancellation workflows`
+
+Next stage: Stage 8 - Original-system automated tests and UML baseline. Not started.

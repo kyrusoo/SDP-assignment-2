@@ -36,11 +36,12 @@ public class App {
     private static <F extends Family> void runQuotation(
             FabricationFactory<F> factory, Design design) {
         FabricationService<F> service = new FabricationService<>(factory);
-        FabricationJob<F> job = service.quoteJob(design);
-        printReport(job);
+        JobQuote<F> quote = service.quoteJob(design);
+        printReport(quote);
     }
 
-    private static void printReport(FabricationJob<?> job) {
+    private static void printReport(JobQuote<?> quote) {
+        FabricationJob<?> job = quote.job();
         Design design = job.getDesign();
         System.out.println("=== Makerspace quotation ===");
         System.out.println("Family: " + job.familyName());
@@ -51,7 +52,7 @@ public class App {
         System.out.printf(Locale.ROOT, "Estimated time: %.0f minutes%n", job.estimatedMinutes());
         System.out.printf(Locale.ROOT, "Required material: %.2f %s%n",
                 job.requiredMaterial(), job.materialUnit());
-        System.out.printf(Locale.ROOT, "Estimated cost: %.2f credits%n", job.estimatedCost());
+        System.out.printf(Locale.ROOT, "Estimated cost: %.2f credits%n", quote.cost());
         System.out.println("Booking check: PASSED (quote only; no job was queued)");
     }
 
