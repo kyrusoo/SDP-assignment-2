@@ -330,7 +330,9 @@ including `laser "Desk sign" 2 10`. No Git staging or commit was performed.
 
 Suggested commit: `feat: implement quotation submission and cancellation workflows`
 
-## Stage 8 - Implemented, awaiting review/commit
+## Stage 8 - Committed
+
+Verified commit `86a3450de6166faed4607fd55514164608853bb8` before Stage 9.
 
 Started from clean Git status at 3506e8a. Read root instructions, production
 sources, build configuration, ignore rules and history. The no-factory baseline
@@ -375,5 +377,36 @@ for quotation or WorkflowDemo.main with printing, laser or vinyl for operations.
 
 Suggested commit: `test: verify original workflows compatibility and architecture`
 
-No staging/commit was performed. Next stage: Stage 9 - Add the fourth family.
-Not started; Stage 8 must be reviewed and committed before that extension.
+## Stage 9 - Implemented, awaiting review/commit
+
+Started from clean status at the committed Stage 8 baseline above. Read root
+AGENTS.md, relevant products, factory/registry and pom.xml; checked Git history
+and nested instructions. Added the six Embroidery classes and EmbroideryTest.
+Modified only FactoryRegistry registration and App usage text in existing Java.
+Added docs/fourth-family.md with the full baseline hash and exact changed paths;
+updated this progress file. Service, interfaces and original tests are unchanged.
+
+Executed with Microsoft JDK 21 outside the sandbox:
+
+```powershell
+$env:JAVA_HOME = 'C:/Users/duzel/.jdks/ms-21.0.12.1'
+& 'C:/Program Files/JetBrains/IntelliJ IDEA 2026.2.2/plugins/maven-plugin/lib/maven3/bin/mvn.cmd' -o -B '-Dmaven.repo.local=target/stage2-check/m2' test
+& 'C:/Users/duzel/.jdks/ms-21.0.12.1/bin/java.exe' -cp target/classes sdp.assignment2.App embroidery
+& 'C:/Users/duzel/.jdks/ms-21.0.12.1/bin/java.exe' -cp target/classes sdp.assignment2.WorkflowDemo embroidery
+git diff --check
+git diff --name-only 86a3450de6166faed4607fd55514164608853bb8
+git status --short
+```
+
+BUILD SUCCESS: 29 JUnit tests, 0 failures/errors/skips. Both demos exited 0.
+Quotation: 25 minutes, 10 meters thread, 6.75 credits. Workflow stock:
+500 -> 490 -> 500, remaining 500 after repeated cancellation. git diff --check
+passed. File inventory includes untracked additions. Extension commit comparison
+will be checked after the student commits; no extension hash is invented.
+
+IntelliJ: run App.main or WorkflowDemo.main with JDK 21 and arguments embroidery;
+run Lifecycle > test for all tests. No staging/commit was performed.
+
+Suggested commit: `feat: add embroidery family without changing business workflows`
+
+Next stage: Stage 10 - Final UML, documentation, and requirements audit. Not started.

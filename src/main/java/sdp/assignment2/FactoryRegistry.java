@@ -15,6 +15,7 @@ public final class FactoryRegistry {
             case "printing" -> new PrintingFactory();
             case "laser" -> new LaserFactory();
             case "vinyl" -> new VinylFactory();
+            case "embroidery" -> new EmbroideryFactory();
             default -> throw new IllegalArgumentException("Unknown family: " + name);
         };
     }

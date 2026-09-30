@@ -57,7 +57,7 @@ public class App {
     }
 
     private static void printUsage() {
-        System.err.println("Families: printing, laser, vinyl");
+        System.err.println("Families: printing, laser, vinyl, embroidery");
         System.err.println("Examples of IntelliJ Program arguments:");
         System.err.println("  laser");
         System.err.println("  laser \"Desk sign\" 2 10");
