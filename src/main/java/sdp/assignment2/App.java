@@ -23,43 +23,23 @@ public class App {
                     Integer.parseInt(args[3]))
                     : new Design("Desk sign", 2, 10);
 
-            // Part A: direct creation and repeated booking checks are intentional.
+            // Stage 2 keeps direct creation; processing uses the common interface.
+            FabricationJob<?> job;
             if (family.equals("printing")) {
-                PrintingJob job = new PrintingJob(design);
-
-                if (job.estimatedMinutes() > MAX_BOOKING_MINUTES) {
-                    throw new IllegalArgumentException(
-                            "This job exceeds the 120-minute booking limit.");
-                }
-
-                printReport(design, "3D printing", job.estimatedMinutes(),
-                        job.requiredMaterial(), "grams of PLA", job.estimatedCost());
-
+                job = new PrintingJob(design);
             } else if (family.equals("laser")) {
-                LaserJob job = new LaserJob(design);
-
-                if (job.estimatedMinutes() > MAX_BOOKING_MINUTES) {
-                    throw new IllegalArgumentException(
-                            "This job exceeds the 120-minute booking limit.");
-                }
-
-                printReport(design, "Laser cutting", job.estimatedMinutes(),
-                        job.requiredMaterial(), "material sheets", job.estimatedCost());
-
+                job = new LaserJob(design);
             } else if (family.equals("vinyl")) {
-                VinylJob job = new VinylJob(design);
-
-                if (job.estimatedMinutes() > MAX_BOOKING_MINUTES) {
-                    throw new IllegalArgumentException(
-                            "This job exceeds the 120-minute booking limit.");
-                }
-
-                printReport(design, "Vinyl cutting", job.estimatedMinutes(),
-                        job.requiredMaterial(), "cm of vinyl roll", job.estimatedCost());
-
+                job = new VinylJob(design);
             } else {
                 throw new IllegalArgumentException("Unknown family: " + family);
             }
+
+            if (job.estimatedMinutes() > MAX_BOOKING_MINUTES) {
+                throw new IllegalArgumentException(
+                        "This job exceeds the 120-minute booking limit.");
+            }
+            printReport(job);
         } catch (NumberFormatException exception) {
             System.err.println("Error: quantity and work units must be whole numbers"
                     + " between 1 and 2147483647.");
@@ -72,19 +52,18 @@ public class App {
         }
     }
 
-    private static void printReport(Design design, String family,
-                                    double minutes, double material,
-                                    String materialUnit, double cost) {
+    private static void printReport(FabricationJob<?> job) {
+        Design design = job.getDesign();
         System.out.println("=== Makerspace quotation ===");
-        System.out.println("Family: " + family);
+        System.out.println("Family: " + job.familyName());
         System.out.println("Design: " + design.getName());
         System.out.println("Quantity: " + design.getQuantity());
         System.out.println("Work units per item: " + design.getWorkUnitsPerItem());
         System.out.println("Total work units: " + design.getTotalWorkUnits());
-        System.out.printf(Locale.ROOT, "Estimated time: %.0f minutes%n", minutes);
+        System.out.printf(Locale.ROOT, "Estimated time: %.0f minutes%n", job.estimatedMinutes());
         System.out.printf(Locale.ROOT, "Required material: %.2f %s%n",
-                material, materialUnit);
-        System.out.printf(Locale.ROOT, "Estimated cost: %.2f credits%n", cost);
+                job.requiredMaterial(), job.materialUnit());
+        System.out.printf(Locale.ROOT, "Estimated cost: %.2f credits%n", job.estimatedCost());
         System.out.println("Booking check: PASSED (quote only; no job was queued)");
     }
 
