@@ -106,7 +106,9 @@ Use the Maven tool window's Lifecycle > test to repeat the Maven build check.
 
 Suggested commit: `refactor: introduce typed product interfaces and family markers`
 
-## Stage 3 - Implemented, awaiting review/commit
+## Stage 3 - Committed
+
+Verified commit `035911dd0dd8c314859cae8dfb578da294f742d3` before Stage 4.
 
 Started from a clean working tree at `84a4cae`. Re-read root AGENTS.md and inspected
 the current sources, pom.xml, Git status and history. JDK remains Microsoft
@@ -150,4 +152,54 @@ IntelliJ: run `sdp.assignment2.App.main` with JDK 21. Use no arguments, `printin
 
 Suggested commit: `feat: introduce Factory Method for validated job preparation`
 
-Next stage: Stage 4 - Complete the original product families. Not started.
+## Stage 4 - Implemented, awaiting review/commit
+
+Started from clean Git status at `035911d`; read root AGENTS.md, current Java
+sources, pom.xml and Git history. No nested source/docs AGENTS.md files were found.
+The existing Java 21 Maven setup and package sdp.assignment2 are preserved.
+
+Added under src/main/java/sdp/assignment2:
+
+- Machine.java and MaterialCatalog.java: typed product contracts.
+- PrintingMachine.java, LaserMachine.java, VinylMachine.java: real queues and
+  material-based per-job capacity limits.
+- PrintingMaterials.java, LaserMaterials.java, VinylMaterials.java: stock,
+  quotation delegation and reversible reservations.
+- JobQueue.java and MaterialStock.java: package-private shared state mechanics.
+
+Added docs/original-products.md and updated docs/progress.md. Existing Java files,
+including App, Design, jobs and creators, and pom.xml were not modified.
+Pricing remains owned by jobs; catalogs delegate quotation instead of copying
+rates. Family assumptions and component limitations are documented in
+original-products.md. No Abstract Factory, service or fourth family was added.
+
+Commands executed from the project root:
+
+```powershell
+# Capture existing Stage 3 output before adding files:
+& ([scriptblock]::Create((Get-Content target/stage2-check/check.ps1 -Raw))) target/classes target/stage4-check/before.json
+$env:JAVA_HOME = 'C:/Users/duzel/.jdks/ms-21.0.12.1'
+& 'C:/Program Files/JetBrains/IntelliJ IDEA 2026.2.2/plugins/maven-plugin/lib/maven3/bin/mvn.cmd' -o -B '-Dmaven.repo.local=target/stage2-check/m2' test
+& ([scriptblock]::Create((Get-Content target/stage2-check/check.ps1 -Raw))) target/classes target/stage4-check/after.json
+& 'C:/Users/duzel/.jdks/ms-21.0.12.1/bin/java.exe' --class-path target/classes target/stage4-check/ProductChecks.java
+git diff --check
+```
+
+Maven compiled 24 source files and completed BUILD SUCCESS using Microsoft
+JDK 21 outside the sandbox and the existing offline cache. No JUnit suite exists.
+All 12 CLI cases above matched the Stage 3 capture exactly (stdout, stderr and
+exit codes). The ignored temporary ProductChecks.java passed 51 assertions:
+each family's quote has no mutation; reserve/release accounting; duplicate
+reservation/queue rejection; ordered immutable queue snapshots; physical capacity
+rejection without queue mutation; removal and repeated removal; repeated/unknown
+release; empty/exact stock; and invalid initial stock. These are executable
+component checks, not committed JUnit tests. git diff --check passed.
+
+IntelliJ: run sdp.assignment2.App.main with JDK 21 and no arguments, printing,
+laser, vinyl, or `laser "Desk sign" 2 10`. Output remains the quotation demo.
+The new products can be exercised using the example in original-products.md;
+they are not yet connected to App. No Git staging or commit was performed.
+
+Suggested commit: `feat: implement original machines and material catalogs`
+
+Next stage: Stage 5 - Abstract Factory and typed composition. Not started.
