@@ -4,9 +4,6 @@ import java.util.Locale;
 
 public class App {
 
-    // Example rule for this classroom simulation, not a real machine limit.
-    private static final int MAX_BOOKING_MINUTES = 120;
-
     public static void main(String[] args) {
         try {
             if (args.length != 0 && args.length != 1 && args.length != 4) {
@@ -23,22 +20,19 @@ public class App {
                     Integer.parseInt(args[3]))
                     : new Design("Desk sign", 2, 10);
 
-            // Stage 2 keeps direct creation; processing uses the common interface.
-            FabricationJob<?> job;
+            // Select a creator once; it owns job creation and preparation.
+            JobCreator<?> creator;
             if (family.equals("printing")) {
-                job = new PrintingJob(design);
+                creator = new PrintingJobCreator();
             } else if (family.equals("laser")) {
-                job = new LaserJob(design);
+                creator = new LaserJobCreator();
             } else if (family.equals("vinyl")) {
-                job = new VinylJob(design);
+                creator = new VinylJobCreator();
             } else {
                 throw new IllegalArgumentException("Unknown family: " + family);
             }
 
-            if (job.estimatedMinutes() > MAX_BOOKING_MINUTES) {
-                throw new IllegalArgumentException(
-                        "This job exceeds the 120-minute booking limit.");
-            }
+            FabricationJob<?> job = creator.prepareJob(design);
             printReport(job);
         } catch (NumberFormatException exception) {
             System.err.println("Error: quantity and work units must be whole numbers"
