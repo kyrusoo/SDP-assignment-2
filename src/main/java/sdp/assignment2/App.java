@@ -13,28 +13,14 @@ public class App {
 
             String family = args.length == 0
                     ? "printing"
-                    : args[0].trim().toLowerCase(Locale.ROOT);
+                    : args[0];
 
             Design design = args.length == 4
                     ? new Design(args[1], Integer.parseInt(args[2]),
                     Integer.parseInt(args[3]))
                     : new Design("Desk sign", 2, 10);
 
-            // Select one compatible family for the service at initialization.
-            FabricationFactory<?> factory;
-            if (family.equals("printing")) {
-                factory = new PrintingFactory();
-            } else if (family.equals("laser")) {
-                factory = new LaserFactory();
-            } else if (family.equals("vinyl")) {
-                factory = new VinylFactory();
-            } else {
-                throw new IllegalArgumentException("Unknown family: " + family);
-            }
-
-            FabricationService<?> service = new FabricationService<>(factory);
-            FabricationJob<?> job = service.quoteJob(design);
-            printReport(job);
+            runQuotation(FactoryRegistry.select(family), design);
         } catch (NumberFormatException exception) {
             System.err.println("Error: quantity and work units must be whole numbers"
                     + " between 1 and 2147483647.");
@@ -45,6 +31,13 @@ public class App {
             printUsage();
             System.exit(1);
         }
+    }
+
+    private static <F extends Family> void runQuotation(
+            FabricationFactory<F> factory, Design design) {
+        FabricationService<F> service = new FabricationService<>(factory);
+        FabricationJob<F> job = service.quoteJob(design);
+        printReport(job);
     }
 
     private static void printReport(FabricationJob<?> job) {

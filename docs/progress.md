@@ -204,7 +204,9 @@ they are not yet connected to App. No Git staging or commit was performed.
 
 Suggested commit: `feat: implement original machines and material catalogs`
 
-## Stage 5 - Implemented, awaiting review/commit
+## Stage 5 - Committed
+
+Verified commit `41b46f05fc2ebf1964278af0d2253cb00b1e1ab4` before Stage 6.
 
 Started from clean status at c04d5be. Read root AGENTS.md completely, inspected
 current contracts, App, Creator, concrete products, pom.xml and Git history.
@@ -245,4 +247,39 @@ commit was performed.
 
 Suggested commit: `feat: add Abstract Factory with typed family composition`
 
-Next stage: Stage 6 - Runtime factory selection. Not started.
+## Stage 6 - Implemented, awaiting review/commit
+
+Started from clean status at 41b46f0. Read root AGENTS.md completely, inspected
+App, factory/service contracts, pom.xml and Git history. No nested source/docs
+instructions were found. The existing Java 21 Maven setup is preserved.
+
+Added src/main/java/sdp/assignment2/FactoryRegistry.java. Updated App.java to
+delegate selection/normalization and use a generic runQuotation helper that
+captures the selected factory type. Added docs/runtime-selection.md and updated
+this progress file. Service, products, creators, formulas and CLI report/error
+handling are unchanged. No Stage 7 operations were added.
+
+Commands executed:
+
+```powershell
+& ([scriptblock]::Create((Get-Content target/stage2-check/check.ps1 -Raw))) target/classes target/stage6-check/before.json
+$env:JAVA_HOME = 'C:/Users/duzel/.jdks/ms-21.0.12.1'
+& 'C:/Program Files/JetBrains/IntelliJ IDEA 2026.2.2/plugins/maven-plugin/lib/maven3/bin/mvn.cmd' -o -B '-Dmaven.repo.local=target/stage2-check/m2' test
+& ([scriptblock]::Create((Get-Content target/stage2-check/check.ps1 -Raw))) target/classes target/stage6-check/after.json
+git diff --check
+```
+
+Maven compiled 30 files for Java 21 and reported BUILD SUCCESS, using the existing
+offline cache outside the sandbox. There are no existing JUnit tests. All 12 CLI
+smoke cases listed earlier matched the fresh before capture exactly in stdout,
+stderr and exit code, including each original family, default arguments,
+normalized family input, invalid input and booking rejection. JSON comparison
+reported no differences. git diff --check passed with line-ending warnings only.
+
+IntelliJ: run sdp.assignment2.App.main with JDK 21; leave arguments empty or enter
+printing, laser, vinyl, or `laser "Desk sign" 2 10`. Invalid `unknown` still exits
+with code 1 and usage. No staging or commit was performed.
+
+Suggested commit: `feat: select fabrication families from command-line arguments`
+
+Next stage: Stage 7 - Three collaborating business operations. Not started.
