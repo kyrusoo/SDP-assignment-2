@@ -377,7 +377,9 @@ for quotation or WorkflowDemo.main with printing, laser or vinyl for operations.
 
 Suggested commit: `test: verify original workflows compatibility and architecture`
 
-## Stage 9 - Implemented, awaiting review/commit
+## Stage 9 - Committed
+
+Verified extension commit `0af039741d46bd33c81aab428a78061e1f4aa671` in Stage 10.
 
 Started from clean status at the committed Stage 8 baseline above. Read root
 AGENTS.md, relevant products, factory/registry and pom.xml; checked Git history
@@ -409,4 +411,50 @@ run Lifecycle > test for all tests. No staging/commit was performed.
 
 Suggested commit: `feat: add embroidery family without changing business workflows`
 
-Next stage: Stage 10 - Final UML, documentation, and requirements audit. Not started.
+## Stage 10 - Implemented, awaiting review/commit
+
+Started from clean status at 0af0397. Re-read root instructions and inspected
+current code, all test sources, documentation and actual commit statistics.
+Assignment 2.docx is absent; audit scope is the supplied AGENTS.md summary.
+Verified the extension's exact eight added/three modified paths against the
+86a3450..0af0397 commit comparison and updated fourth-family.md accordingly.
+
+Updated README.md (four-family matrix, results, final diagram and audit links),
+docs/fourth-family.md and docs/progress.md. Added docs/final-system.puml, its
+SVG/PNG exports, docs/requirements-audit.md and docs/oral-defense.md. Preserved
+the original three-family UML. No production code, tests, build or ignore rules
+changed. Nine substantive development commits exist excluding setup and this
+uncommitted documentation; the no-factory baseline and later extension survive.
+
+Commands actually executed include:
+
+```powershell
+git log --reverse --format='%h %s' --stat
+git show 87a6142:src/main/java/sdp/assignment2/App.java
+git diff --name-status 86a3450 HEAD
+git merge-base --is-ancestor 87a6142 86a3450
+git merge-base --is-ancestor 86a3450 0af0397
+$env:JAVA_HOME = 'C:/Users/duzel/.jdks/ms-21.0.12.1'
+& 'C:/Program Files/JetBrains/IntelliJ IDEA 2026.2.2/plugins/maven-plugin/lib/maven3/bin/mvn.cmd' -o -B '-Dmaven.repo.local=target/stage2-check/m2' test
+& 'C:/Users/duzel/.jdks/ms-21.0.12.1/bin/java.exe' -jar target/stage8-tools/plantuml.jar -tsvg docs/final-system.puml
+& 'C:/Users/duzel/.jdks/ms-21.0.12.1/bin/java.exe' -jar target/stage8-tools/plantuml.jar -tpng docs/final-system.puml
+git diff --check
+```
+
+Both ancestry checks returned 0. Maven BUILD SUCCESS: 29 tests, 0 failures,
+0 errors, 0 skipped, including the JavaCompiler compatibility control. Rendering
+completed successfully using the existing local PlantUML tool; inspected the PNG.
+Maven/rendering used JDK 21 outside the sandbox. git diff --check passed.
+
+The audit maps objective and Parts A-J individually to classes, named tests,
+documents and actual commits. Remaining review items: check against the absent
+original DOCX, practice the oral explanation, and review/commit these final docs.
+Simulation and custom-product contract limitations are explicitly documented.
+
+IntelliJ: JDK 21; Maven Lifecycle > test. Run App.main for quotation or
+WorkflowDemo.main for all operations, using printing, laser, vinyl or embroidery.
+No Git staging or commit was performed.
+
+Suggested commit: `docs: finalize UML and assignment requirements evidence`
+
+No further implementation stage is planned. Final student review/commit remains.

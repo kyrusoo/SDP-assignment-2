@@ -1,16 +1,16 @@
-﻿# Makerspace Factory Patterns
+# Makerspace Factory Patterns
 
 Java 21 / Maven classroom simulation of a university makerspace. Work units,
-credits, rates, stock and machine limits are fictional. This is the original
-three-family system through Stage 8; embroidery has not been implemented.
+credits, rates, stock and machine limits are fictional. The final system includes
+printing, laser, vinyl and embroidery.
 
 ## Product families
 
-| Product | Printing | Laser | Vinyl |
-| --- | --- | --- | --- |
-| FabricationJob | PrintingJob | LaserJob | VinylJob |
-| Machine | PrintingMachine | LaserMachine | VinylMachine |
-| MaterialCatalog | PrintingMaterials | LaserMaterials | VinylMaterials |
+| Product | Printing | Laser | Vinyl | Embroidery |
+| --- | --- | --- | --- | --- |
+| FabricationJob | PrintingJob | LaserJob | VinylJob | EmbroideryJob |
+| Machine | PrintingMachine | LaserMachine | VinylMachine | EmbroideryMachine |
+| MaterialCatalog | PrintingMaterials | LaserMaterials | VinylMaterials | EmbroideryMaterials |
 
 JobCreator's final preparation workflow calls its subclass-overridden createJob
 and enforces the booking limit: this is Factory Method. FabricationFactory creates
@@ -64,6 +64,7 @@ Default design: Desk sign, quantity 2, work units 10.
 | printing | 65 | 50 grams PLA | 8.50 |
 | laser | 15 | 1 sheet | 7.00 |
 | vinyl | 11 | 80 cm vinyl | 2.70 |
+| embroidery | 25 | 10 meters thread | 6.75 |
 
 WorkflowDemo accepts no arguments or one family. Quotation does not mutate stock
 or queues. Submission reserves material then enqueues; rejection rolls back the
@@ -74,7 +75,7 @@ mutation/failure contracts.
 
 ## Automated evidence and UML
 
-Stage 8 run: **24 JUnit tests, 0 failures, 0 errors, 0 skipped**.
+Final verification: **29 JUnit tests, 0 failures, 0 errors, 0 skipped**.
 
 - OriginalFamiliesTest: 18 tests, covering all nine factory products, all original
   workflows, selection, booking boundaries, stock failure, capacity rejection,
@@ -86,14 +87,15 @@ Stage 8 run: **24 JUnit tests, 0 failures, 0 errors, 0 skipped**.
 
 Reports are generated in target/surefire-reports. Test count refers to JUnit
 methods, not individual assertions. Earlier temporary checks are historical
-evidence, not part of this suite. Fourth-family coverage comes in Stage 9.
+evidence, not part of this suite. EmbroideryTest adds 5 tests for product creation,
+selection, the complete workflow, booking rejection and machine capacity.
 
-[Editable UML](docs/original-system.puml) |
-[SVG diagram](docs/original-system.svg) |
-[PNG diagram](docs/original-system.png)
+[Editable UML](docs/final-system.puml) |
+[SVG diagram](docs/final-system.svg) |
+[PNG diagram](docs/final-system.png)
 
 The diagram labels both patterns, the service as Client, the product interfaces,
-all original concrete products, creators, factories and their relationships.
+all twelve concrete products, creators, factories and their relationships.
 Use the SVG for zooming. Dashed triangle arrows implement interfaces; solid
 triangle arrows extend a class. Other arrows indicate retained references or
 creation/use dependencies. Queue/stock helper internals are omitted for clarity.
@@ -107,5 +109,10 @@ See [progress](docs/progress.md), [initial problems](docs/initial-problems.md),
 
 Stage documents describe their historical API at the time. The current quoteJob
 returns JobQuote<F>; use job() for product details and cost() for the quotation.
-The no-factory baseline remains in commit 87a6142. Stage 8 must be reviewed and
-committed before starting the fourth-family extension.
+The no-factory baseline remains in commit 87a6142. The original system was
+completed at 86a3450 and embroidery added afterward at 0af0397.
+
+See the [verified extension report](docs/fourth-family.md),
+[requirements audit](docs/requirements-audit.md), and
+[oral-defense notes](docs/oral-defense.md). The historical three-family UML
+remains in docs/original-system.puml. Stage 10 documentation awaits review/commit.

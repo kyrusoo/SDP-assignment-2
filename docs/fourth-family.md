@@ -2,8 +2,8 @@
 
 Original-system baseline: `86a3450de6166faed4607fd55514164608853bb8`
 (`test: verify original workflows compatibility and architecture`). Verified
-committed with clean status before extension edits. Stage 9 is awaiting review
-and commit; no extension commit hash exists yet.
+committed with clean status before extension edits. Extension commit:
+`0af039741d46bd33c81aab428a78061e1f4aa671`.
 
 ## Simulation behavior
 
@@ -42,13 +42,13 @@ false and leaves stock unchanged.
 FabricationService, all product/factory interfaces, existing families, shared
 queue/stock code, WorkflowDemo and the existing tests are unchanged. No business
 workflow changes were required. The App edit is display text, not workflow logic.
-The README and UML remain the Stage 8 baseline until the Stage 10 documentation
-update; use this report for extension details.
+Stage 10 updates the README and adds final four-family UML separately; those
+documentation edits are not part of the extension comparison below.
 
-The file list includes untracked additions, checked using git status --short and
-git diff --name-only against the baseline. After the student's extension commit,
-verify it again using `git diff --name-status 86a3450de6166faed4607fd55514164608853bb8 <extension-commit>`.
-That commit comparison is pending; no future hash is assumed.
+The original inventory included untracked additions. In Stage 10 it was verified
+against `git diff --name-status 86a3450de6166faed4607fd55514164608853bb8 0af039741d46bd33c81aab428a78061e1f4aa671`:
+the exact eight added and three modified paths above match the actual commit.
+Git ancestry also confirms the original baseline precedes the extension.
 
 ## Verification and running
 

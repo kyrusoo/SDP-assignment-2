@@ -1,0 +1,152 @@
+@startuml
+!pragma layout smetana
+title Makerspace - Final four-family system (Stage 10)
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+hide empty members
+class App <<CLI>>
+class WorkflowDemo <<CLI>>
+class FactoryRegistry {
+  +{static} select(String): FabricationFactory<?>
+}
+class "FabricationService<F>" as Service <<Client>> {
+  -factory: FabricationFactory<F>
+  -machine: Machine<F>
+  -materials: MaterialCatalog<F>
+  +quoteJob(Design): JobQuote<F>
+  +submitJob(Design): UUID
+  +cancelJob(UUID): boolean
+}
+interface "FabricationFactory<F>" as Factory <<Abstract Factory>> {
+  +createJob(Design): FabricationJob<F>
+  +createMachine(): Machine<F>
+  +createMaterialCatalog(): MaterialCatalog<F>
+}
+abstract class "JobCreator<F>" as Creator <<Factory Method>> {
+  +prepareJob(Design): FabricationJob<F> {final}
+  #createJob(Design): FabricationJob<F> {abstract}
+}
+interface "FabricationJob<F>" as Job <<Product>> {
+  +getDesign(): Design
+  +estimatedMinutes(): double
+  +requiredMaterial(): double
+  +estimatedCost(): double
+}
+interface "Machine<F>" as Machine <<Product>> {
+  +enqueue(FabricationJob<F>)
+  +remove(FabricationJob<F>): boolean
+  +queuedJobs(): List
+}
+interface "MaterialCatalog<F>" as Materials <<Product>> {
+  +quoteCost(FabricationJob<F>): double
+  +reserve(FabricationJob<F>)
+  +release(FabricationJob<F>): boolean
+  +availableStock(): double
+}
+class Design
+class "JobQuote<F>" as Quote <<record>>
+interface Family
+class PrintingFamily
+class LaserFamily
+class VinylFamily
+Family <|.. PrintingFamily
+Family <|.. LaserFamily
+Family <|.. VinylFamily
+App ..> FactoryRegistry
+WorkflowDemo ..> FactoryRegistry
+App ..> Service
+WorkflowDemo ..> Service
+FactoryRegistry ..> Factory : selects
+Service --> Factory : retains
+Service --> Machine : retains one
+Service --> Materials : retains one
+Service ..> Job
+Service ..> Quote : returns
+Quote --> Job
+Job --> Design
+Creator ..> Job : creates and validates
+Factory ..> Job : creates
+Factory ..> Machine : creates
+Factory ..> Materials : creates
+Machine ..> Job : queues same F
+Materials ..> Job : reserves same F
+
+package "Printing family" {
+ class PrintingFactory
+ class PrintingJobCreator
+ class PrintingJob
+ class PrintingMachine
+ class PrintingMaterials
+ PrintingFactory --> PrintingJobCreator : delegates preparation
+ PrintingJobCreator ..> PrintingJob : creates
+ PrintingFactory ..> PrintingMachine : creates
+ PrintingFactory ..> PrintingMaterials : creates
+}
+package "Laser family" {
+ class LaserFactory
+ class LaserJobCreator
+ class LaserJob
+ class LaserMachine
+ class LaserMaterials
+ LaserFactory --> LaserJobCreator : delegates preparation
+ LaserJobCreator ..> LaserJob : creates
+ LaserFactory ..> LaserMachine : creates
+ LaserFactory ..> LaserMaterials : creates
+}
+package "Vinyl family" {
+ class VinylFactory
+ class VinylJobCreator
+ class VinylJob
+ class VinylMachine
+ class VinylMaterials
+ VinylFactory --> VinylJobCreator : delegates preparation
+ VinylJobCreator ..> VinylJob : creates
+ VinylFactory ..> VinylMachine : creates
+ VinylFactory ..> VinylMaterials : creates
+}
+Factory <|.. PrintingFactory
+Factory <|.. LaserFactory
+Factory <|.. VinylFactory
+Creator <|-- PrintingJobCreator
+Creator <|-- LaserJobCreator
+Creator <|-- VinylJobCreator
+Job <|.. PrintingJob
+Job <|.. LaserJob
+Job <|.. VinylJob
+Machine <|.. PrintingMachine
+Machine <|.. LaserMachine
+Machine <|.. VinylMachine
+Materials <|.. PrintingMaterials
+Materials <|.. LaserMaterials
+Materials <|.. VinylMaterials
+package "Embroidery family" {
+ class EmbroideryFactory
+ class EmbroideryJobCreator
+ class EmbroideryJob
+ class EmbroideryMachine
+ class EmbroideryMaterials
+ EmbroideryFactory --> EmbroideryJobCreator : delegates preparation
+ EmbroideryJobCreator ..> EmbroideryJob : creates
+ EmbroideryFactory ..> EmbroideryMachine : creates
+ EmbroideryFactory ..> EmbroideryMaterials : creates
+}
+class EmbroideryFamily
+Family <|.. EmbroideryFamily
+Factory <|.. EmbroideryFactory
+Creator <|-- EmbroideryJobCreator
+Job <|.. EmbroideryJob
+Machine <|.. EmbroideryMachine
+Materials <|.. EmbroideryMaterials
+note bottom of Service
+  F extends Family across all typed contracts.
+  Each concrete family binds F to its marker:
+  PrintingFamily, LaserFamily, VinylFamily or EmbroideryFamily.
+  Shared queue/stock helpers omitted for clarity.
+end note
+legend
+  Dashed triangle: interface implementation
+  Solid triangle: class inheritance
+  Dashed arrow: dependency / creation
+  Solid arrow: retained reference / association
+endlegend
+@enduml
