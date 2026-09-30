@@ -284,7 +284,9 @@ with code 1 and usage. No staging or commit was performed.
 
 Suggested commit: `feat: select fabrication families from command-line arguments`
 
-## Stage 7 - Implemented, awaiting review/commit
+## Stage 7 - Committed
+
+Verified commit `3506e8aff1a27930c9f97ec53f5e3520b6f90616` before Stage 8.
 
 Started from clean status at 0988423 after reading root AGENTS.md and inspecting
 service, queue/stock implementations, product contracts, App, pom.xml and history.
@@ -328,4 +330,50 @@ including `laser "Desk sign" 2 10`. No Git staging or commit was performed.
 
 Suggested commit: `feat: implement quotation submission and cancellation workflows`
 
-Next stage: Stage 8 - Original-system automated tests and UML baseline. Not started.
+## Stage 8 - Implemented, awaiting review/commit
+
+Started from clean Git status at 3506e8a. Read root instructions, production
+sources, build configuration, ignore rules and history. The no-factory baseline
+87a6142 remains in history. No nested source/docs instructions were found.
+
+Changed pom.xml to add test-scoped JUnit Jupiter 5.11.4 and pin Surefire 3.5.4.
+Added these files under src/test/java/sdp/assignment2:
+
+- OriginalFamiliesTest.java: 18 JUnit tests for original factories, workflows,
+  runtime selection, booking limits, stock failure and queue/reservation safety.
+- ServiceAbstractionTest.java: 5 JUnit tests with independent test implementations
+  of all product interfaces and the factory, including failed enqueue rollback.
+- FamilyCompatibilityTest.java: 1 JavaCompiler test with a successful matching
+  control and rejected mixed-family call using identical compiler options.
+
+Added docs/original-system.puml and its SVG/PNG exports. Updated README.md and
+this progress file. Production Java and .gitignore are unchanged. TestFamily is
+only a test fixture, not the production fourth-family extension.
+
+Executed:
+
+```powershell
+$env:JAVA_HOME = 'C:/Users/duzel/.jdks/ms-21.0.12.1'
+& 'C:/Program Files/JetBrains/IntelliJ IDEA 2026.2.2/plugins/maven-plugin/lib/maven3/bin/mvn.cmd' -B '-Dmaven.repo.local=target/stage2-check/m2' test
+Invoke-WebRequest -UseBasicParsing 'https://repo.maven.apache.org/maven2/net/sourceforge/plantuml/plantuml/1.2024.8/plantuml-1.2024.8.jar' -OutFile target/stage8-tools/plantuml.jar
+& 'C:/Users/duzel/.jdks/ms-21.0.12.1/bin/java.exe' -jar target/stage8-tools/plantuml.jar -tsvg docs/original-system.puml
+& 'C:/Users/duzel/.jdks/ms-21.0.12.1/bin/java.exe' -jar target/stage8-tools/plantuml.jar -tpng docs/original-system.puml
+git diff --check
+```
+
+Maven completed BUILD SUCCESS: 24 tests, 0 failures, 0 errors, 0 skipped.
+Verified Surefire text reports under target/surefire-reports. The compiler test
+ran successfully with the full Microsoft JDK 21; it was not skipped. Test/plugin
+downloads and rendering ran outside the sandbox. No global software was installed.
+PlantUML was not found installed; a local ignored tool JAR was downloaded and its
+Smetana layout rendered SVG and PNG successfully (exit 0). Inspected the PNG;
+the SVG supports zooming into the full class diagram. git diff --check passed.
+
+IntelliJ: reload Maven, select JDK 21 for the project and Maven runner, and run
+Lifecycle > test or the test directory. Run App.main with `laser "Desk sign" 2 10`
+for quotation or WorkflowDemo.main with printing, laser or vinyl for operations.
+
+Suggested commit: `test: verify original workflows compatibility and architecture`
+
+No staging/commit was performed. Next stage: Stage 9 - Add the fourth family.
+Not started; Stage 8 must be reviewed and committed before that extension.
