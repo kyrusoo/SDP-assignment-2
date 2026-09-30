@@ -20,19 +20,20 @@ public class App {
                     Integer.parseInt(args[3]))
                     : new Design("Desk sign", 2, 10);
 
-            // Select a creator once; it owns job creation and preparation.
-            JobCreator<?> creator;
+            // Select one compatible family for the service at initialization.
+            FabricationFactory<?> factory;
             if (family.equals("printing")) {
-                creator = new PrintingJobCreator();
+                factory = new PrintingFactory();
             } else if (family.equals("laser")) {
-                creator = new LaserJobCreator();
+                factory = new LaserFactory();
             } else if (family.equals("vinyl")) {
-                creator = new VinylJobCreator();
+                factory = new VinylFactory();
             } else {
                 throw new IllegalArgumentException("Unknown family: " + family);
             }
 
-            FabricationJob<?> job = creator.prepareJob(design);
+            FabricationService<?> service = new FabricationService<>(factory);
+            FabricationJob<?> job = service.quoteJob(design);
             printReport(job);
         } catch (NumberFormatException exception) {
             System.err.println("Error: quantity and work units must be whole numbers"

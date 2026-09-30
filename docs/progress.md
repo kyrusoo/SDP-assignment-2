@@ -152,7 +152,9 @@ IntelliJ: run `sdp.assignment2.App.main` with JDK 21. Use no arguments, `printin
 
 Suggested commit: `feat: introduce Factory Method for validated job preparation`
 
-## Stage 4 - Implemented, awaiting review/commit
+## Stage 4 - Committed
+
+Verified commit `c04d5be528f5a1b4d54ef7ea27826395d94f45d4` before Stage 5.
 
 Started from clean Git status at `035911d`; read root AGENTS.md, current Java
 sources, pom.xml and Git history. No nested source/docs AGENTS.md files were found.
@@ -202,4 +204,45 @@ they are not yet connected to App. No Git staging or commit was performed.
 
 Suggested commit: `feat: implement original machines and material catalogs`
 
-Next stage: Stage 5 - Abstract Factory and typed composition. Not started.
+## Stage 5 - Implemented, awaiting review/commit
+
+Started from clean status at c04d5be. Read root AGENTS.md completely, inspected
+current contracts, App, Creator, concrete products, pom.xml and Git history.
+No nested src/docs instructions were found. Java 21 and Maven remain unchanged.
+
+Added under src/main/java/sdp/assignment2: FabricationFactory.java,
+PrintingFactory.java, LaserFactory.java, VinylFactory.java, FabricationService.java.
+Updated App.java to select a factory and quote through the service. Added
+docs/abstract-factory.md and updated this progress file. Existing products,
+creators, rates and CLI parsing/error/report code are unchanged. No registry,
+submission/cancellation workflow or fourth family was added.
+
+Actual commands:
+
+```powershell
+& ([scriptblock]::Create((Get-Content target/stage2-check/check.ps1 -Raw))) target/classes target/stage5-check/before.json
+$env:JAVA_HOME = 'C:/Users/duzel/.jdks/ms-21.0.12.1'
+& 'C:/Program Files/JetBrains/IntelliJ IDEA 2026.2.2/plugins/maven-plugin/lib/maven3/bin/mvn.cmd' -o -B '-Dmaven.repo.local=target/stage2-check/m2' test
+& ([scriptblock]::Create((Get-Content target/stage2-check/check.ps1 -Raw))) target/classes target/stage5-check/after.json
+& 'C:/Users/duzel/.jdks/ms-21.0.12.1/bin/java.exe' --class-path target/classes target/stage5-check/CompositionChecks.java
+git diff --check
+```
+
+Maven compiled 29 Java files and reported BUILD SUCCESS. Maven and the Java source
+launcher ran outside the sandbox using the existing offline cache/JDK. There are
+still no JUnit tests. All 12 CLI cases matched the before capture exactly in both
+output streams and exit code. The ignored temporary composition checker passed
+24 assertions covering all three families, booking rejection through factories,
+non-mutating quotes, independent production products, retained factory products,
+once-only machine/catalog creation and immutable snapshots. These checks are not
+a committed JUnit suite. git diff --check passed. The invalid generic example in
+the documentation was not separately compiled.
+
+IntelliJ: run sdp.assignment2.App.main with JDK 21. Leave Program arguments empty
+or use printing, laser, vinyl, or `laser "Desk sign" 2 10`. The same quotations
+now pass through Abstract Factory and FabricationService. No Git staging or
+commit was performed.
+
+Suggested commit: `feat: add Abstract Factory with typed family composition`
+
+Next stage: Stage 6 - Runtime factory selection. Not started.
